@@ -1,0 +1,49 @@
+#!/bin/bash -e
+#
+# S2I assemble script for the 'sti-gradle' image.
+# The 'assemble' script builds your application source so that it is ready to run.
+#
+# For more information refer to the documentation:
+#	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+
+if [[ "$1" == "-h" ]]; then
+	# If the 'sti-gradle' assemble script is executed with '-h' flag,
+	# print the usage.
+	exec /usr/libexec/s2i/usage
+fi
+
+# Restore artifacts from the previous build (if they exist).
+#
+if [ "$(ls /tmp/artifacts/ 2>/dev/null)" ]; then
+  echo "---> Restoring build artifacts..."
+  mv /tmp/artifacts/. ./
+fi
+
+echo "---> Installing application source..."
+cp -Rf /tmp/src/. ./
+
+echo "---> Building application from source..."
+
+if [ -f "build.gradle" ]; then
+
+  pushd . &> /dev/null
+  JAVA_HOME=/etc/alternatives/java_sdk_1.8.0
+
+  echo "Found build.gradle... attempting to build with './gradlew stage'"
+
+  ./gradlew stage
+
+  ERR=$?
+  if [ $ERR -ne 0 ]; then
+    echo "Aborting due to error code $ERR from './gradlew stage'"
+    exit $ERR
+  fi
+
+  echo "Copying built jar files into $DEPLOY_DIR..."
+  popd &> /dev/null
+fi
+
+echo "...done"
+
+exit $rc
