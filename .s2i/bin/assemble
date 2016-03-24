@@ -17,6 +17,7 @@ fi
 #
 if [ "$(ls /tmp/artifacts/ 2>/dev/null)" ]; then
   echo "---> Restoring build artifacts..."
+	ls -l /tmp/artifacts
   mv /tmp/artifacts/. ./
 fi
 
@@ -39,6 +40,11 @@ if [ -f "build.gradle" ]; then
     echo "Aborting due to error code $ERR from './gradlew stage'"
     exit $ERR
   fi
+
+  echo "Fixing permissions"
+
+  fix-permissions ./
+  fix-permissions /opt/app-root
 
   echo "Copying built jar files into $DEPLOY_DIR..."
   popd &> /dev/null
