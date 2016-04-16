@@ -18,6 +18,6 @@ if [ -n "$BUILD_DIR" ]; then
   cd $BUILD_DIR
 fi
 
-echo "---> Starting 'java -Dserver.host=0.0.0.0 -Dserver.port=8080 -jar $JAR_FILE'"
+echo "---> Starting 'java $JAVA_OPTS -Dserver.host=0.0.0.0 -Dserver.port=8080 -jar $JAR_FILE'"
 
-exec java -Dserver.host=0.0.0.0 -Dserver.port=8080 -jar $JAR_FILE
+exec java $JAVA_OPTS -Dserver.host=0.0.0.0 -Dserver.port=8080 -jar $JAR_FILE
