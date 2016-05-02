@@ -2,7 +2,6 @@
 
 pushd ${HOME} >/dev/null
 
-# ${HOME}/.gradle is the gradle repo dir
 tar cf - ./.gradle
 
 popd >/dev/null
